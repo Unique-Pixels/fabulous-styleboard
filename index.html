@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="media/icon.svg" type="image/svg+xml" />
     <title>Fabulous Styleboard</title>
+
+    <!-- 
+         Add all stylesheets you want available here. Ensure you include the data tag to enable the stylesheet in the switcher.
+         <link rel="stylesheet" href="path/to/sheet" data-name="Display Name">
+    -->
+    
   </head>
 
   <body>
@@ -674,5 +680,133 @@ A B C D E F G
           document.querySelector("#test-dialog").close()
         );
     </script>
+
+    <div
+      style="
+        all: unset;
+        display: block;
+        padding: 5px;
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background-color: #fff;
+      "
+    >
+      <div
+        id="style-selector"
+        style="
+          all: unset;
+          display: block;
+          width: 200px;
+          border: 1px solid #3c3c3c;
+          padding: 10px;
+          font-family: system-ui;
+          user-select: none;
+        "
+      >
+        Select active stylesheets
+        <span
+          style="
+            all: unset;
+            height: 0;
+            position: absolute;
+            width: 0;
+            border: 6px solid transparent;
+            border-top-color: #000;
+            top: 50%;
+            right: 10px;
+            margin-top: -3px;
+          "
+        ></span>
+        <ul
+          id="style-list"
+          style="
+            all: unset;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            top: 100%;
+            border: inherit;
+            border-top: none;
+            left: -1px;
+            right: -1px;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+            height: 100px;
+            overflow: scroll;
+            overflow-x: hidden;
+            pointer-events: none;
+            background-color: white;
+          "
+        >
+          <template id="style-checkbox">
+            <li style="all: unset; display: block">
+              <label style="all: unset">
+                <input style: style="all:unset; appearance: auto; margin:5px;"
+                type="checkbox" value="" name="" checked />
+                <p style="all: unset"></p
+              ></label>
+            </li>
+          </template>
+        </ul>
+      </div>
+      <script>
+        document
+          .querySelector("#style-selector")
+          .addEventListener("click", toggleList);
+        document
+          .querySelector("#style-list")
+          .addEventListener("click", (e) => e.stopPropagation());
+
+        const stylesheets = document.querySelectorAll("link[rel=stylesheet]");
+
+        for (stylesheet of stylesheets) {
+          const selector = document
+            .querySelector("#style-checkbox")
+            .content.firstElementChild.cloneNode(true);
+
+          selector.children[0].children[0].name = stylesheet.dataset.name;
+          if (stylesheet.getAttribute("disabled") == "") {
+            selector.children[0].children[0].checked = false;
+          }
+          selector.children[0].children[1].textContent =
+            stylesheet.dataset.name;
+          selector.children[0].children[0].addEventListener(
+            "click",
+            toggleStylesheet
+          );
+
+          document.querySelector("#style-list").appendChild(selector);
+        }
+
+        function toggleList() {
+          if (
+            document.querySelector("#style-list").style.pointerEvents == "auto"
+          ) {
+            document.querySelector("#style-list").style.opacity = "0";
+            document.querySelector("#style-list").style.pointerEvents = "none";
+          } else {
+            document.querySelector("#style-list").style.opacity = "1";
+            document.querySelector("#style-list").style.pointerEvents = "auto";
+          }
+        }
+
+        function toggleStylesheet(e) {
+    if (e.target.checked) {
+      console.log(e.target.name)
+        document.querySelector(`[data-name="${
+
+            e.target.name
+        }"]`).removeAttribute('disabled');
+    } else {
+      console.log(e.target.name)
+        document.querySelector(`[data-name="${
+            e.target.name
+        }"]`).setAttribute('disabled', 'true');
+    }
+}
+      </script>
+    </div>
   </body>
 </html>
